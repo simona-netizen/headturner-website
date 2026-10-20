@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Placeholder ads</title>
+<!--
+  Source for assets/ads/ad-01.png … ad-10.png (each 576 × 720, shown at 288 × 360 in the gallery frame).
+  PLACEHOLDERS: fictional B2B SaaS brands and made-up numbers, styled like LinkedIn ad creatives.
+  Industries echo Thilak's real client mix (HR tech, museum tech, construction tech) and the fictional
+  testimonial companies. Replace with real (anonymised) ads Thilak has made before launch.
+  Each .ad fills the full frame with square corners; the site's frame applies the radius.
+-->
+<link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@500&family=Funnel+Sans:wght@400;600;700&family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; background: #ddd; }
+  body { display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; }
+  .ad {
+    position: relative; width: 576px; height: 720px; overflow: hidden; box-sizing: border-box;
+    padding: 48px; display: flex; flex-direction: column; justify-content: space-between;
+    font-family: "Funnel Sans", sans-serif;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 26px; letter-spacing: -.02em; }
+  .brand i { width: 36px; height: 36px; border-radius: 10px; display: block; }
+  .d { font-family: "Funnel Display", sans-serif; font-weight: 500; letter-spacing: -.03em; line-height: 1.02; margin: 0; }
+  .cta { align-self: flex-start; padding: 16px 26px; border-radius: 999px; font-weight: 600; font-size: 22px; }
+  .small { font-size: 22px; line-height: 1.4; margin: 0; }
+
+  /* 01 Brightloop (HR tech): big stat */
+  #ad1 { background: #5b3df5; color: #fff; }
+  #ad1 .brand i { background: #c9f26b; }
+  #ad1 .d { font-size: 168px; }
+  #ad1 .cta { background: #c9f26b; color: #1b1240; }
+
+  /* 02 Nordvault (security): founder quote, thought-leader style */
+  #ad2 { background: #f4f1ea; color: #14213d; }
+  #ad2 .who { display: flex; align-items: center; gap: 16px; }
+  #ad2 .who img { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; }
+  #ad2 .who b { display: block; font-size: 24px; }
+  #ad2 .who span { font-size: 19px; opacity: .7; }
+  #ad2 .q { font-family: "Instrument Serif", serif; font-size: 62px; line-height: 1.05; margin: 0; }
+  #ad2 .brand i { background: #14213d; }
+
+  /* 03 Fieldwork (construction tech): bold headline on yellow */
+  #ad3 { background: #ffd23f; color: #111; }
+  #ad3 .d { font-size: 92px; text-transform: uppercase; letter-spacing: -.04em; }
+  #ad3 .stripe { position: absolute; left: 0; right: 0; bottom: 140px; height: 26px; background: repeating-linear-gradient(-45deg, #111 0 22px, #ffd23f 22px 44px); }
+  #ad3 .brand i { background: #111; }
+  #ad3 .cta { background: #111; color: #ffd23f; position: relative; z-index: 1; }
+
+  /* 04 Curio (museum tech): editorial */
+  #ad4 { background: #6e1f2e; color: #f8e9e1; }
+  #ad4 .d { font-family: "Instrument Serif", serif; font-weight: 400; font-size: 96px; letter-spacing: -.02em; line-height: .98; }
+  #ad4 .frame { position: absolute; right: -60px; top: 120px; width: 300px; height: 380px; border: 3px solid rgba(248,233,225,.4); border-radius: 160px 160px 0 0; }
+  #ad4 .brand i { background: #f8e9e1; border-radius: 50%; }
+
+  /* 05 Stacklane (devtools): product UI */
+  #ad5 { background: #0f1720; color: #e6edf3; }
+  #ad5 .d { font-size: 64px; }
+  #ad5 .ui { background: #18232f; border: 2px solid #253444; border-radius: 22px; padding: 26px; display: flex; flex-direction: column; gap: 14px; font-family: ui-monospace, Menlo, monospace; font-size: 20px; }
+  #ad5 .ui .row { display: flex; justify-content: space-between; }
+  #ad5 .ui .ok { color: #3ddc97; }
+  #ad5 .bar { height: 10px; border-radius: 6px; background: #253444; overflow: hidden; }
+  #ad5 .bar i { display: block; height: 100%; width: 82%; background: #3ddc97; }
+  #ad5 .brand i { background: #3ddc97; }
+
+  /* 06 Brightloop: report / lead magnet */
+  #ad6 { background: #efeaff; color: #1b1240; }
+  #ad6 .book { position: absolute; right: 44px; bottom: 120px; width: 200px; height: 262px; background: #5b3df5; border-radius: 10px 18px 18px 10px; box-shadow: -10px 0 0 #3f27c4 inset, 0 30px 50px rgba(27,18,64,.25); transform: rotate(6deg); color: #fff; padding: 28px; box-sizing: border-box; font-family: "Funnel Display", sans-serif; font-size: 34px; line-height: 1.05; }
+  #ad6 .d { font-size: 64px; max-width: 280px; margin-bottom: 220px; }
+  #ad6 .book { font-size: 25px; padding: 24px 26px; }
+  #ad6 .cta { background: #1b1240; color: #fff; }
+  #ad6 .brand i { background: #5b3df5; }
+
+  /* 07 Nordvault: webinar */
+  #ad7 { background: #14213d; color: #fff; }
+  #ad7 .tag { align-self: flex-start; background: #ff5d5d; color: #fff; font-weight: 700; font-size: 20px; padding: 10px 16px; border-radius: 8px; letter-spacing: .04em; }
+  #ad7 .d { font-size: 76px; }
+  #ad7 .date { font-size: 26px; opacity: .8; }
+  #ad7 .brand i { background: #fff; }
+
+  /* 08 Fieldwork: before / after */
+  #ad8 { background: #fff; color: #111; padding: 0; }
+  #ad8 .half { flex: 1; padding: 40px 48px; display: flex; flex-direction: column; justify-content: center; gap: 10px; }
+  #ad8 .half:first-child { background: #ececec; color: #6b6b6b; }
+  #ad8 .half:last-child { background: #ffd23f; }
+  #ad8 .lbl { font-weight: 700; font-size: 20px; letter-spacing: .08em; }
+  #ad8 .d { font-size: 64px; }
+  #ad8 .half:first-child .d { text-decoration: line-through; text-decoration-thickness: 4px; }
+
+  /* 09 Curio: customer quote */
+  #ad9 { background: #f8e9e1; color: #6e1f2e; }
+  #ad9 .q { font-family: "Instrument Serif", serif; font-size: 58px; line-height: 1.08; margin: 0; }
+  #ad9 .stat { font-family: "Funnel Display", sans-serif; font-size: 120px; letter-spacing: -.04em; line-height: 1; }
+  #ad9 .brand i { background: #6e1f2e; border-radius: 50%; }
+
+  /* 10 Stacklane: checklist carousel cover */
+  #ad10 { background: #3ddc97; color: #0f1720; }
+  #ad10 .d { font-size: 78px; }
+  #ad10 ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; font-size: 26px; font-weight: 600; }
+  #ad10 li::before { content: "✓"; display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: #0f1720; color: #3ddc97; font-size: 18px; margin-right: 14px; }
+  #ad10 .swipe { font-size: 22px; font-weight: 600; }
+  #ad10 .brand i { background: #0f1720; }
+</style>
+</head>
+<body>
+  <div class="ad" id="ad1">
+    <div class="brand"><i></i>Brightloop</div>
+    <div><p class="d">−38%</p><p class="small" style="font-size:30px;max-width:420px">time-to-hire for teams that switched from spreadsheets.</p></div>
+    <span class="cta">See how</span>
+  </div>
+
+  <div class="ad" id="ad2">
+    <div class="who"><img src="../testimonial-2.jpg" alt=""><div><b>Pieter Claes</b><span>Founder, Nordvault</span></div></div>
+    <p class="q">“Most breaches don’t start with hackers. They start with a forgotten admin account.”</p>
+    <div class="brand"><i></i>Nordvault</div>
+  </div>
+
+  <div class="ad" id="ad3">
+    <div class="brand"><i></i>Fieldwork</div>
+    <p class="d">Your site diary is still on paper?</p>
+    <div class="stripe"></div>
+    <span class="cta">Go digital in a day</span>
+  </div>
+
+  <div class="ad" id="ad4">
+    <div class="frame"></div>
+    <div class="brand"><i></i>Curio</div>
+    <p class="d">Sell out your next exhibition before it opens.</p>
+    <p class="small" style="opacity:.8">Ticketing and memberships for museums.</p>
+  </div>
+
+  <div class="ad" id="ad5">
+    <div class="brand"><i></i>Stacklane</div>
+    <p class="d">Ship on Friday. Sleep on Friday.</p>
+    <div class="ui">
+      <div class="row"><span>deploy #4182</span><span class="ok">● passed</span></div>
+      <div class="bar"><i></i></div>
+      <div class="row"><span>rollback ready</span><span class="ok">0.8s</span></div>
+    </div>
+  </div>
+
+  <div class="ad" id="ad6">
+    <div class="brand"><i></i>Brightloop</div>
+    <p class="d">The 2026 Hiring Benchmark</p>
+    <div class="book">The 2026 Hiring Benchmark</div>
+    <span class="cta">Free download</span>
+  </div>
+
+  <div class="ad" id="ad7">
+    <span class="tag">LIVE WEBINAR</span>
+    <div><p class="d">Zero trust, zero jargon.</p><p class="date" style="margin:20px 0 0">Thursday 13 Nov · 4 PM CET</p></div>
+    <div class="brand"><i></i>Nordvault</div>
+  </div>
+
+  <div class="ad" id="ad8">
+    <div class="half"><span class="lbl">BEFORE</span><p class="d">3 days to close a snag list</p></div>
+    <div class="half"><span class="lbl">WITH FIELDWORK</span><p class="d">Closed before lunch</p></div>
+  </div>
+
+  <div class="ad" id="ad9">
+    <div class="brand"><i></i>Curio</div>
+    <div><p class="stat">+52%</p><p class="q">“members renewed online in the first season.”</p></div>
+    <p class="small">Head of Visitor Experience, a Benelux museum</p>
+  </div>
+
+  <div class="ad" id="ad10">
+    <div class="brand"><i></i>Stacklane</div>
+    <p class="d">5 signs your CI is slowing you down</p>
+    <ul><li>Builds over 10 minutes</li><li>Flaky tests you ignore</li><li>Manual rollbacks</li></ul>
+    <span class="swipe">Swipe →</span>
+  </div>
+</body>
+</html>

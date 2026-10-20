@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Playbook cover composite</title>
+<!--
+  Source for assets/book.png.
+  Paints a new Headturner cover onto book-mockup.png in perspective:
+  1. a paper-coloured layer hides the mockup's original artwork,
+  2. the cover design is mapped onto the cover's four corners with matrix3d,
+  3. design ink uses multiply so the mockup's paper texture and lighting show through.
+  Render: open via a local server and screenshot #stage with a transparent background.
+-->
+<link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@500&family=Funnel+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root { --ink: #1b1a20; --coral: #ff7a59; --pink-dark: #b14a93; --muted: #5f6268; }
+  html, body { margin: 0; background: transparent; }
+  #stage { position: relative; width: 2700px; height: 4160px; }
+  #stage > img { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  /* Cover design is authored flat at 1130 × 1800, then warped into place */
+  .cover { position: absolute; left: 0; top: 0; width: 1130px; height: 1800px; transform-origin: 0 0; }
+
+  .paper {
+    background: linear-gradient(90deg, var(--paper-l), var(--paper-r));
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 3%, #000 97%, transparent 100%), linear-gradient(transparent 0, #000 2.5%, #000 97.5%, transparent 100%);
+    -webkit-mask-composite: source-in; mask-composite: intersect;
+  }
+  .paper::after { /* fine grain so the patch matches the mockup's paper */
+    content: ""; position: absolute; inset: 0; opacity: .05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .design {
+    mix-blend-mode: multiply;
+    box-sizing: border-box; padding: 120px 110px 130px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    color: var(--ink); font-family: "Funnel Sans", sans-serif;
+  }
+  .top { display: flex; justify-content: space-between; align-items: center; }
+  .top img { width: 300px; }
+  .tag { font-size: 30px; font-weight: 600; letter-spacing: .08em; color: var(--muted); }
+
+  .grid { display: grid; grid-template-columns: repeat(5, 72px); gap: 44px; align-self: center; }
+  .grid img { width: 72px; height: 72px; opacity: .45; }
+  .grid img.is-coral { opacity: 1; }
+
+  h1 { margin: 0; font-family: "Funnel Display", sans-serif; font-weight: 500; font-size: 148px; line-height: 1.02; letter-spacing: -0.03em; }
+  h1 span { color: var(--pink-dark); }
+  .sub { margin: 44px 0 0; font-size: 34px; line-height: 1.4; color: var(--muted); max-width: 760px; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <img src="book-mockup.png" alt="">
+  <div class="cover paper" id="paper"></div>
+  <div class="cover design" id="design">
+    <div class="top">
+      <img src="../logo-ink.svg" alt="Headturner">
+      <span class="tag">PLAYBOOK</span>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div>
+      <h1>Thought<br>Leader Ads<br><span>Playbook</span></h1>
+      <p class="sub">How B2B SaaS teams turn their experts’ posts into ads that build influence.</p>
+    </div>
+  </div>
+</div>
+<script>
+  // 5 × 5 grid of muted brand marks with a single coral one: "the one people look back at"
+  const grid = document.getElementById('grid');
+  for (let i = 0; i < 25; i++) {
+    const m = document.createElement('img');
+    m.src = i === 13 ? '../mark-coral.svg' : '../mark-muted.svg';
+    if (i === 13) m.className = 'is-coral';
+    grid.appendChild(m);
+  }
+
+  // Cover face corners in book-mockup.png (px), measured from the image
+  const quad = { tl: [338, 318], tr: [2588, 284], br: [2588, 3752], bl: [338, 4048] };
+  const W = 1130, H = 1800;
+
+  // Homography from the flat W×H rectangle to the quad, expressed as a CSS matrix3d
+  function solve(A, b) {
+    const n = b.length;
+    for (let i = 0; i < n; i++) {
+      let max = i; for (let r = i + 1; r < n; r++) if (Math.abs(A[r][i]) > Math.abs(A[max][i])) max = r;
+      [A[i], A[max]] = [A[max], A[i]]; [b[i], b[max]] = [b[max], b[i]];
+      for (let r = i + 1; r < n; r++) { const f = A[r][i] / A[i][i]; for (let c = i; c < n; c++) A[r][c] -= f * A[i][c]; b[r] -= f * b[i]; }
+    }
+    const x = new Array(n);
+    for (let i = n - 1; i >= 0; i--) { let s = b[i]; for (let c = i + 1; c < n; c++) s -= A[i][c] * x[c]; x[i] = s / A[i][i]; }
+    return x;
+  }
+  const src = [[0, 0], [W, 0], [W, H], [0, H]];
+  const dst = [quad.tl, quad.tr, quad.br, quad.bl];
+  const A = [], b = [];
+  src.forEach(([x, y], i) => {
+    const [u, v] = dst[i];
+    A.push([x, y, 1, 0, 0, 0, -u * x, -u * y]); b.push(u);
+    A.push([0, 0, 0, x, y, 1, -v * x, -v * y]); b.push(v);
+  });
+  const [a, b2, c, d, e, f, g, h] = solve(A, b);
+  const m3d = `matrix3d(${a},${d},0,${g},${b2},${e},0,${h},0,0,1,0,${c},${f},0,1)`;
+  document.querySelectorAll('.cover').forEach((el) => { el.style.transform = m3d; });
+
+  // Sample the mockup's clean paper on the left and right of the cover for the patch colour
+  const img = document.querySelector('#stage > img');
+  img.decode().then(() => {
+    const cv = document.createElement('canvas'); cv.width = img.naturalWidth; cv.height = img.naturalHeight;
+    const cx = cv.getContext('2d'); cx.drawImage(img, 0, 0);
+    const avg = (x0, y0) => {
+      const d = cx.getImageData(x0, y0, 40, 400).data; let r = 0, g = 0, bl = 0, n = 0;
+      for (let i = 0; i < d.length; i += 4) { r += d[i]; g += d[i + 1]; bl += d[i + 2]; n++; }
+      return `rgb(${r / n | 0},${g / n | 0},${bl / n | 0})`;
+    };
+    const paper = document.getElementById('paper');
+    // Clean paper only: above the old artwork on the left, beside it on the right
+    paper.style.setProperty('--paper-l', avg(420, 380));
+    paper.style.setProperty('--paper-r', avg(2470, 1800));
+    document.body.dataset.ready = '1';
+  });
+</script>
+</body>
+</html>
